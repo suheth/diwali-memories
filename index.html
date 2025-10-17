@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Scroll Gallery</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="stylesheet" href="style.css">
+
+  
+  <!-- No external libraries needed for our simplified script -->
+</head>
+<body>
+  <!-- Intro Section -->
+  <section class="intro bg-[url('assets/background-stars.gif')] bg-cover bg-center">
+    <div class="flex">
+      <img src="assets/lantern-1.gif" width="200rem" alt="">
+      <img src="assets/lantern-2.gif" width="200rem" alt="" class="hidden sm:block">
+      <img src="assets/lantern-1.gif" width="200rem" alt="" class="hidden sm:block">
+      <img src="assets/lantern-2.gif" width="200rem" alt="" class="hidden sm:block">
+      <img src="assets/lantern-1.gif" width="200rem" alt="" class="hidden sm:block">
+    </div>
+    <h1 class="p-0">HAPPY DIWALI</h1>
+    <p className="leading-[0.89]">
+      With Crackling Jokes & Countless Festive Stories 
+      Wishing you a Diwali filled with unforgettable memories
+    </p>
+  </section>
+
+  <!-- Spotlight Section (Main Animation) -->
+  <section class="spotlight">
+    <!-- Gallery Images Container -->
+    <div class="spotlight-images">
+      <div class="image"><img src="https://picsum.photos/400/500?random=1" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=2" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=3" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=4" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=5" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=6" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=7" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=8" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=8" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=10" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=1" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=1" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=1" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=2" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=3" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=4" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=5" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=6" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=7" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=8" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=8" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=10" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=1" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=1" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=1" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=2" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=3" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=4" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=5" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=6" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=7" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=8" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=8" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=10" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=1" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=1" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=1" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=2" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=3" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=4" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=5" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=6" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=7" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=8" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=8" alt=""></div>
+      <div class="image"><img src="https://picsum.photos/400/500?random=10" alt=""></div>
+      <div class="image"><img src="./storage/images/1.jpg" alt=""></div>
+      <div class="image"><img src="./storage/images/2.jpg" alt=""></div>
+      <div class="image"><img src="./storage/images/3.jpg" alt=""></div>
+      <div class="image"><img src="./storage/images/4.jpg" alt=""></div>
+      <div class="image"><img src="./storage/images/5.jpg" alt=""></div>
+      <div class="image"><img src="./storage/images/6.jpg" alt=""></div>
+      <div class="image"><img src="./storage/images/7.jpg" alt=""></div>
+      <div class="image"><img src="./storage/images/8.jpg" alt=""></div>
+      <div class="image"><img src="./storage/images/9.jpg" alt=""></div>
+      <div class="image"><img src="./storage/images/1.jpg" alt=""></div>
+    </div>
+
+    <!-- Cover Image (Final Hero) -->
+    <div class="spotlight-cover-image">
+      <img src="assets/firework.gif" width="200rem" alt="">
+    </div>
+
+    <!-- Intro Header (Fades Out) -->
+    <div class="intro-header">
+      <h1>Wishing you a Diwali that's as sweet as Kaju Katli, as bright as Fireworks and as warm as Diyas.</h1>
+    </div>
+
+    <!-- Outro Header (Fades In) -->
+    <div class="outro-header">
+      <h1>HAPPY DIWALI!</h1>
+    </div>
+  </section>
+
+  <!-- Outro Section -->
+  <!-- <section class="outro hidden">
+    <h1>Thank you for exploring</h1>
+  </section> -->
+
+
+  <!-- ✅ GSAP Core -->
+  <script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>
+  <!-- ✅ GSAP Plugins -->
+  <script src="https://unpkg.com/gsap@3/dist/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/gsap@3/dist/SplitText.min.js"></script>
+  <!-- ✅ Lenis Smooth Scroll -->
+  <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script> 
+
+  <script>
+    console.log(gsap.version); // -> 3.12.2
+    console.log(ScrollTrigger.version); // -> 3.12.2
+
+    gsap.registerPlugin(ScrollTrigger, SplitText);
+  </script>
+  <!-- CDN links already included in the head section -->
+  <script  type="module" src="script.js"></script>
+</body>
+</html>
+
