@@ -1,8 +1,5 @@
 // Wait for DOM to load
 document.addEventListener('DOMContentLoaded', () => {
-  // Load images
-  // loadImages();
-
   // Register GSAP plugins
   gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -292,6 +289,12 @@ function initSpotlightAnimations() {
               gsap.set(word, { opacity: 1 });
             }
           });
+
+          // 🎯 FADE OUT INDICATOR WITH THE TEXT
+          const indicator = document.querySelector('.indicator');
+          if (indicator) {
+            gsap.set(indicator, { opacity: Math.max(0, 1 - fadeProgress) });
+          }
         } else if (progress < 0.6) {
           gsap.set(introSplit.words, { opacity: 1 });
         } else {
