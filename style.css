@@ -60,6 +60,7 @@ section {
   position: relative;
   background: var(--dark-bg);
   color: var(--light-bg);
+  overflow: hidden
 }
 
 .spotlight-images,
