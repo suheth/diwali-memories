@@ -1,5 +1,31 @@
+// Funny Diwali quotes for loading screen
+const diwaliquotes = [
+  "This Diwali, may your sweets be sweeter than your Instagram likes!",
+  "Loading... Just like your relatives loading up on mithai!",
+  "May your crackers be louder than your neighbor's music!",
+  "Diwali prep: 10% cleaning, 90% hiding the mess behind curtains!",
+  "May your diyas burn longer than your phone battery!",
+  "Loading memories faster than aunties loading their plates!",
+  "This Diwali, may your rangoli be straighter than your life!"
+];
+
+// Rotate quotes during loading
+let quoteIndex = 0;
+const quoteInterval = setInterval(() => {
+  console.log('loading');
+  const quoteElement = document.getElementById('loading-quote');
+  quoteIndex = (quoteIndex + 1) % diwaliquotes.length;
+  if (quoteElement) {
+    console.log('loading setting text');
+    quoteElement.textContent = '"'+diwaliquotes[quoteIndex]+'"';
+  }
+}, 5000);
+
 // Wait for page to fully load
 window.addEventListener('load', () => {
+  // Clear quote rotation
+  clearInterval(quoteInterval);
+  
   // Hide loading screen after everything is loaded
   const loadingScreen = document.getElementById('loading-screen');
   if (loadingScreen) {
@@ -261,7 +287,11 @@ function initSpotlightAnimations() {
           // 🎯 FADE OUT INDICATOR WITH THE TEXT
           const indicator = document.querySelector('.indicator');
           if (indicator) {
-            gsap.set(indicator, { opacity: Math.max(0, 1 - fadeProgress) });
+            const indicatorOpacity = Math.max(0, 1 - fadeProgress);
+            gsap.set(indicator, { 
+              opacity: indicatorOpacity,
+              display: indicatorOpacity === 0 ? 'none' : 'flex'
+            });
           }
         } else if (progress < 0.6) {
           gsap.set(introSplit.words, { opacity: 1 });
@@ -276,7 +306,11 @@ function initSpotlightAnimations() {
           
           const indicator = document.querySelector('.indicator');
           if (indicator) {
-            gsap.set(indicator, { opacity: Math.max(0, 1 - fadeProgress) });
+            const indicatorOpacity = Math.max(0, 1 - fadeProgress);
+            gsap.set(indicator, { 
+              opacity: indicatorOpacity,
+              display: indicatorOpacity === 0 ? 'none' : 'flex'
+            });
           }
         } else if (progress < 0.6) {
           gsap.set(introHeader, { opacity: 1 });
