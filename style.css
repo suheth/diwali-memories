@@ -166,8 +166,8 @@ section {
 		position: absolute;
 		top: 8px;
 		left: 10px;
-		width: 12px;
-		height: 12px;
+		width: 11px;
+		height: 11px;
 		border-left: 2px solid var(--light-bg);
   	border-bottom: 2px solid var(--light-bg);
 		transform: rotate(-45deg);

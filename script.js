@@ -1,13 +1,32 @@
+// Wait for page to fully load
+window.addEventListener('load', () => {
+  // Hide loading screen after everything is loaded
+  const loadingScreen = document.getElementById('loading-screen');
+  if (loadingScreen) {
+    gsap.to(loadingScreen, {
+      opacity: 0,
+      duration: 0.3,
+      onComplete: () => {
+        loadingScreen.style.display = 'none';
+      }
+    });
+  }
+  // Initialize animations
+  setTimeout(initSpotlightAnimations, 100);
+});
+
 // Wait for DOM to load
 document.addEventListener('DOMContentLoaded', () => {
   // Register GSAP plugins
   gsap.registerPlugin(ScrollTrigger, SplitText);
 
   // Initialize Lenis smooth scroll
+  const isMobile = window.innerWidth < 1000;
+  
   const lenis = new Lenis({
-    duration: 1.2,
+    duration: isMobile ? 0.8 : 1.2,
     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    smooth: true,
+    smooth: !isMobile, // Disable smooth scroll on mobile to prevent white screen
   });
 
   function raf(time) {
@@ -19,109 +38,34 @@ document.addEventListener('DOMContentLoaded', () => {
   // Connect Lenis to ScrollTrigger
   lenis.on('scroll', ScrollTrigger.update);
 
-  gsap.ticker.add((time) => {
-    lenis.raf(time * 1000);
-  });
-
+  // Remove duplicate raf call that causes mobile issues
   gsap.ticker.lagSmoothing(0);
 
-
-  // Initialize spotlight animations
-  initSpotlightAnimations();
-
-  // Re-initialize on resize
-  window.addEventListener('resize', initSpotlightAnimations);
+  // Re-initialize on resize with debounce
+  let resizeTimeout;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      ScrollTrigger.refresh();
+      initSpotlightAnimations();
+    }, 250);
+  });
 });
 
- // 🎯 CONFIGURATION - EDIT THESE VALUES
-  const IMAGE_CONFIG = {
-    folder: './storage/images/',           // Path to your images folder
-    prefix: '',                    // Prefix before number (e.g., 'img-')
-    startNumber: 1,                // First image number
-    endNumber: 9,                 // Last image number
-    extension: '.jpg',             // Image extension (.jpg, .png, etc.)
-    padding: 0,                    // Number padding (0 for none, 3 for 001)
-    coverImageNumber: 1            // Which image to use as cover
-  };
-
-  // 🎯 FUNCTION TO GENERATE IMAGE PATHS
-  function generateImagePaths() {
-    const paths = [];
-    
-    for (let i = IMAGE_CONFIG.startNumber; i <= IMAGE_CONFIG.endNumber; i++) {
-      // Add padding if specified
-      let numberStr = i.toString();
-      if (IMAGE_CONFIG.padding > 0) {
-        numberStr = numberStr.padStart(IMAGE_CONFIG.padding, '0');
-      }
-      
-      // Construct full path
-      const imagePath = `${IMAGE_CONFIG.folder}${IMAGE_CONFIG.prefix}${numberStr}${IMAGE_CONFIG.extension}`;
-      paths.push(imagePath);
-    }
-    
-    return paths;
-  }
-
-
-
-// 🎯 FUNCTION TO LOAD IMAGES INTO DOM
-function loadImages() {
-  const imagePaths = generateImagePaths();
-  const container = document.querySelector('.spotlight-images');
-  const coverImg = document.querySelector('.spotlight-cover-image img');
-  
-  console.log(`📸 Loading ${imagePaths.length} images...`);
-  
-  // Set cover image
-  const coverPath = `${IMAGE_CONFIG.folder}${IMAGE_CONFIG.prefix}${IMAGE_CONFIG.coverImageNumber}${IMAGE_CONFIG.extension}`;
-  coverImg.src = coverPath;
-  
-  let loadedCount = 0;
-  let errorCount = 0;
-  
-  // Create image elements
-  imagePaths.forEach((path, index) => {
-    const div = document.createElement('div');
-    div.className = 'image';
-    
-    const img = document.createElement('img');
-    img.src = path;
-    img.alt = `Image ${index + 1}`;
-    // img.loading = 'lazy';
-    
-    // Track successful loads
-    img.onload = () => {
-      loadedCount++;
-      if (loadedCount === 1) {
-        console.log(`✅ First image loaded, starting animation...`);
-        // Initialize animations after first image loads
-        setTimeout(() => initSpotlightAnimations(), 300);
-      }
-    };
-    
-    // Handle missing images gracefully
-    img.onerror = () => {
-      errorCount++;
-      console.warn(`⚠️ Failed to load: ${path}`);
-      div.remove(); // Remove failed image from DOM
-    };
-    
-    div.appendChild(img);
-    container.appendChild(div);
-  });
-  
-  // Log final stats after a delay
-  setTimeout(() => {
-    console.log(`📊 Loaded: ${loadedCount} | Failed: ${errorCount} | Total: ${imagePaths.length}`);
-  }, 5000);
-}
-
 function initSpotlightAnimations() {
+  // Clear any existing ScrollTriggers to prevent conflicts
+  ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+  
   const images = document.querySelectorAll('.spotlight-images .image');
   const coverImage = document.querySelector('.spotlight-cover-image img');
   const introHeader = document.querySelector('.intro-header h1');
   const outroHeader = document.querySelector('.outro-header h1');
+
+  // Safety checks
+  if (!images.length || !coverImage || !introHeader || !outroHeader) {
+    console.warn('Missing required elements for animation');
+    return;
+  }
 
   const imageCount = images.length;
 
@@ -139,13 +83,26 @@ function initSpotlightAnimations() {
 
   console.log(`📊 ${imageCount} images | ${adjustedScrollPerImage}% per image | Total: ${scrollLength}%`);
 
-  // Split text
-  let introSplit = new SplitText(introHeader, { type: 'words' });
-  gsap.set(introSplit.words, { opacity: 1 });
+  // Split text with error handling
+  let introSplit, outroSplit;
+  
+  try {
+    // Reset text content first to prevent SplitText breaking
+    introHeader.innerHTML = introHeader.textContent;
+    outroHeader.innerHTML = outroHeader.textContent;
+    
+    introSplit = new SplitText(introHeader, { type: 'words' });
+    gsap.set(introSplit.words, { opacity: 1 });
 
-  let outroSplit = new SplitText(outroHeader, { type: 'words' });
-  gsap.set(outroSplit.words, { opacity: 0 });
-  gsap.set(outroHeader, { opacity: 1 });
+    outroSplit = new SplitText(outroHeader, { type: 'words' });
+    gsap.set(outroSplit.words, { opacity: 0 });
+    gsap.set(outroHeader, { opacity: 1 });
+  } catch (error) {
+    console.warn('SplitText failed, using fallback:', error);
+    // Fallback: use the elements directly
+    gsap.set(introHeader, { opacity: 1 });
+    gsap.set(outroHeader, { opacity: 0 });
+  }
 
   // Generate directions dynamically
   const directions = generateDirections(imageCount);
@@ -168,45 +125,51 @@ function initSpotlightAnimations() {
   const startPositions = {
     x: 0,
     y: 0,
-    z: -2000,
+    z: isMobile ? -500 : -2000, // Reduce Z-depth on mobile
     scale: 0,
   };
 
-  // 🎯 INCREASED Z-DEPTH: Images fly further forward/backward
-  const zDepthMultiplier = 1 + (imageCount / 100); // Scale Z-axis with image count
-  const maxZDepth = Math.min(1000, 500 * zDepthMultiplier);
+  // 🎯 REDUCED Z-DEPTH for mobile performance
+  const zDepthMultiplier = 1 + (imageCount / 100);
+  const maxZDepth = isMobile ? 
+    Math.min(300, 150 * zDepthMultiplier) : // Much smaller Z values on mobile
+    Math.min(1000, 500 * zDepthMultiplier);
 
   const endPositions = [...images].map((_, index) => {
     const direction = directions[index];
     
     // 🎯 LAYERED DEPTH: Some images closer, some farther
-    const depthVariation = (index % 3) * 200; // Creates 3 depth layers
+    const depthVariation = isMobile ? 
+      (index % 3) * 50 : // Smaller depth variation on mobile
+      (index % 3) * 200;
     
     return {
       x: direction.x * screenWidth * scatterMultiplier,
       y: direction.y * screenHeight * scatterMultiplier,
-      z: maxZDepth + depthVariation, // Variable Z position for depth
+      z: maxZDepth + depthVariation,
       scale: 1,
     };
   });
 
   console.log(`🌌 Max Z-depth: ${maxZDepth}px`);
 
-  // Set initial positions
+  // Set initial positions with mobile optimization
   images.forEach((image) => {
     gsap.set(image, {
       x: startPositions.x,
       y: startPositions.y,
       z: startPositions.z,
       scale: startPositions.scale,
+      force3D: true, // Force hardware acceleration
     });
   });
 
   gsap.set(coverImage, {
     x: 0,
     y: 0,
-    z: -2000,
+    z: isMobile ? -500 : -2000,
     scale: 0,
+    force3D: true,
   });
 
   // Dynamic stagger
@@ -258,18 +221,23 @@ function initSpotlightAnimations() {
         const z = start.z + (end.z - start.z) * imageProgress;
         const scale = start.scale + (end.scale - start.scale) * imageProgress;
 
-        gsap.set(image, { x, y, z, scale });
+        gsap.set(image, { 
+          x, y, z, scale,
+          force3D: true,
+          transformOrigin: "center center"
+        });
       });
 
       // Cover image animation
       if (progress > 0.7) {
         const coverProgress = (progress - 0.7) / 0.3;
-        const coverZ = -2000 + 2000 * coverProgress;
+        const coverZ = (isMobile ? -500 : -2000) + (isMobile ? 500 : 2000) * coverProgress;
         const coverScale = coverProgress;
 
         gsap.set(coverImage, {
           z: coverZ,
           scale: coverScale,
+          force3D: true,
         });
       }
 
@@ -300,6 +268,21 @@ function initSpotlightAnimations() {
         } else {
           gsap.set(introSplit.words, { opacity: 0 });
         }
+      } else {
+        // Fallback: animate entire intro header
+        if (progress >= 0.6 && progress <= 0.75) {
+          const fadeProgress = (progress - 0.6) / 0.15;
+          gsap.set(introHeader, { opacity: Math.max(0, 1 - fadeProgress) });
+          
+          const indicator = document.querySelector('.indicator');
+          if (indicator) {
+            gsap.set(indicator, { opacity: Math.max(0, 1 - fadeProgress) });
+          }
+        } else if (progress < 0.6) {
+          gsap.set(introHeader, { opacity: 1 });
+        } else {
+          gsap.set(introHeader, { opacity: 0 });
+        }
       }
 
       // Text animations (outro fade in 80-95%)
@@ -322,6 +305,16 @@ function initSpotlightAnimations() {
           gsap.set(outroSplit.words, { opacity: 0 });
         } else {
           gsap.set(outroSplit.words, { opacity: 1 });
+        }
+      } else {
+        // Fallback: animate entire outro header
+        if (progress >= 0.8 && progress <= 0.95) {
+          const fadeProgress = (progress - 0.8) / 0.15;
+          gsap.set(outroHeader, { opacity: Math.min(1, fadeProgress) });
+        } else if (progress < 0.8) {
+          gsap.set(outroHeader, { opacity: 0 });
+        } else {
+          gsap.set(outroHeader, { opacity: 1 });
         }
       }
     },
@@ -389,6 +382,3 @@ function generateDirections(count, pattern = 'sunburst') {
   
   return directions;
 }
-
-// Usage in initSpotlightAnimations():
-const directions = generateDirections(imageCount, 'galaxy'); // or 'sunburst', 'galaxy'
